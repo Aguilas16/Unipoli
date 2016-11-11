@@ -75,7 +75,16 @@ if __name__ == '__main__':
 
     message = "Hola Pablo"
 
-    while True:
+    
+        if button.value() is 1:
+            display.setColor(255, 255, 0)
+            display.setCursor(0,0)
+            display.write(str(message))
+            relay.on()
+            time.sleep(1)
+            relay.off()
+		
+	while True:
 
         luxes = light.value()
         luxes = int(luxes)    
@@ -85,14 +94,6 @@ if __name__ == '__main__':
         datafreeboard['luxes'] =  luxes
         datafreeboard['message'] = message
         dweepy.dweet_for(datadweet, datafreeboard)
-
-        if button.value() is 1:
-            display.setColor(255, 255, 0)
-            display.setCursor(0,0)
-            display.write(str(message))
-            relay.on()
-            time.sleep(1)
-            relay.off()
 
     time.sleep(1)
     updater.idle()
