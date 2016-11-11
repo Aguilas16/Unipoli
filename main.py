@@ -5,10 +5,17 @@ import dweepy
 import signal
 import sys
 import time
+import ConfigParser
 
 import pyupm_grove as grove
 import pyupm_grovespeaker as upmGrovespeaker
 import pyupm_i2clcd as lcd
+
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+
+credentials = ConfigParser.ConfigParser()
+credentialsfile = "credentials.config"
+credentials.read(credentialsfile)
 
 button = grove.GroveButton(8)
 display = lcd.Jhd1313m1(0, 0x3E, 0x62)
@@ -21,26 +28,23 @@ datadweet = "Aguilas"
 
 def functionLight(bot, update):
     luxes = light.value()
- #   bot.sendMessage(update.message.chat_id, text='Light! ' + 
-str(luxes))
+    bot.sendMessage(update.message.chat_id, text='Light! ' + str(luxes))
 
-#def functionMessage(bot, update):
- #   bot.sendMessage(update.message.chat_id, text=message)
+def functionMessage(bot, update):
+    bot.sendMessage(update.message.chat_id, text=message)
 
 #def functionPicture(bot, update):
-  #  bot.sendPhoto(update.message.chat_id, 
-#photo=open('documentation/image.jpg',$
+ #   bot.sendPhoto(update.message.chat_id,photo=open('documentation/image.jpg',$
 
-'''
 def functionRelay(bot, update):
     relay.on()
     time.sleep(2)
     relay.off()
     bot.sendMessage(update.message.chat_id, text='Relay!')
-Â´Â
+
 def functionEcho(bot, update):
     bot.sendMessage(update.message.chat_id, text=update.message.text)
-'''
+
 def SIGINTHandler(signum, frame):
 	raise SystemExit
 
@@ -59,6 +63,18 @@ signal.signal(signal.SIGINT, SIGINTHandler)
 
 if __name__ == '__main__':
 
+    credential = credentials.get("telegram", "token")
+    updater = Updater(credential)
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("light", functionLight))
+    dp.add_handler(CommandHandler("message", functionMessage))
+#    dp.add_handler(CommandHandler("picture", functionPicture))
+    dp.add_handler(CommandHandler("relay", functionRelay))
+    dp.add_handler(MessageHandler([Filters.text], functionEcho))
+
+    updater.start_polling()
+
     message = "Hola Cacerola! I'm Xpuhil!"
 
     while True:
@@ -69,13 +85,31 @@ if __name__ == '__main__':
 	display.setColor(luxes, luxes, luxes)
 	display.clear()
 
-	datafreeboard = {}
+credential = credentials.get("telegram", "token")
+    updater = Updater(credential)
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("light", functionLight))
+    dp.add_handler(CommandHandler("message", functionMessage))
+    dp.add_handler(CommandHandler("picture", functionPicture))
+    dp.add_handler(CommandHandler("relay", functionRelay))
+    dp.add_handler(MessageHandler([Filters.text], functionEcho))
+
+    updater.start_polling()
+	
+#	datafreeboard = {}
         datafreeboard['alive'] = alive
-        datafreeboard['alive'] = "1"
+#        datafreeboard['alive'] = "1"
         datafreeboard['luxes'] =  luxes
         datafreeboard['message'] = message
         datafreeboard['sensort'] = sensort
         dweepy.dweet_for(datadweet, datafreeboard)
+	
+	while True:
+        luxes = light.value()
+        luxes = int(luxes)
+        display.setColor(luxes, luxes, luxes)
+        display.clear()
 
 	if button.value() is 1:
             display.setColor(255,0,0)
