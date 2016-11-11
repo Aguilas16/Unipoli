@@ -74,26 +74,26 @@ if __name__ == '__main__':
     updater.start_polling()
 
     message = "Hola Pablo"
+	
+	while True:
 
+		luxes = light.value()
+		luxes = int(luxes)    
+		display.setColor(luxes, luxes, luxes)
+		display.clear()
+		datafreeboard['alive'] = "1"
+		datafreeboard['luxes'] =  luxes
+		datafreeboard['message'] = message
+		dweepy.dweet_for(datadweet, datafreeboard)
     
-        if button.value() is 1:
+       if button.value() is 1:
             display.setColor(255, 255, 0)
             display.setCursor(0,0)
             display.write(str(message))
             relay.on()
             time.sleep(1)
-            relay.off()
-		
-	while True:
-
-        luxes = light.value()
-        luxes = int(luxes)    
-        display.setColor(luxes, luxes, luxes)
-	display.clear()
-	datafreeboard['alive'] = "1"
-        datafreeboard['luxes'] =  luxes
-        datafreeboard['message'] = message
-        dweepy.dweet_for(datadweet, datafreeboard)
+            relay.off()	
+	
 
     time.sleep(1)
     updater.idle()
