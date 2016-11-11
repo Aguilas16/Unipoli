@@ -61,9 +61,17 @@ def exitHandler():
 atexit.register(exitHandler)
 signal.signal(signal.SIGINT, SIGINTHandler)
 
-if __name__ == '__main__':
+if __name__ == '__principal__':
 
-    credential = credentials.get("telegram", "token")
+    while True:
+	alive=button.value()
+        luxes = light.value()
+	luxes.int(luxes)
+        sensort = temp.value()
+	display.setColor(luxes, luxes, luxes)
+	display.clear()
+
+	credential = credentials.get("telegram", "token")
     updater = Updater(credential)
     dp = updater.dispatcher
 
@@ -76,15 +84,7 @@ if __name__ == '__main__':
     updater.start_polling()
 
     message1 = "Hola Cacerola! I'm Xpuhil!"
-
-    while True:
-	alive=button.value()
-        luxes = light.value()
-	luxes.int(luxes)
-        sensort = temp.value()
-	display.setColor(luxes, luxes, luxes)
-	display.clear()
-
+	
 	if button.value() is 1:
             display.setColor(255,0,0)
             display.setCursor(0,0)
